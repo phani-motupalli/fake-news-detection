@@ -662,4 +662,4 @@ def dashboard():
 if __name__ == "__main__":
     init_db()
     load_ml_files()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
