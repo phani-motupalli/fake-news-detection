@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Comparison</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="top-bar">
+        AI Fake News Detection System • Model Comparison
+    </div>
+
+    <header class="main-header">
+        <div class="logo">
+            <h1>Fake <span>News</span></h1>
+        </div>
+
+        <div class="header-actions">
+            <div class="header-item">
+                <i class="fa-solid fa-brain"></i>
+                <div>
+                    <small>Models</small>
+                    <span>Performance Overview</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-menu">
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/model-comparison">Models</a>
+        <a href="/dashboard">Dashboard</a>
+    </nav>
+
+    <section class="page-section">
+        <div class="comparison-layout">
+
+            <div class="highlight-card">
+                <h2>Best Model</h2>
+                <div class="best-model-box">
+                    <h3>{{ best_model }}</h3>
+                    <p>Accuracy: {{ best_accuracy }}%</p>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <h2>Model Accuracy Comparison</h2>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Model Name</th>
+                                <th>Accuracy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for model in model_results %}
+                            <tr>
+                                <td>{{ model.name }}</td>
+                                <td>{{ model.accuracy }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="auth-page">
+
+    <div class="top-bar">
+        AI Fake News Detection System • Create Account
+    </div>
+
+    <div class="auth-background-shape shape-one"></div>
+    <div class="auth-background-shape shape-two"></div>
+    <div class="auth-background-shape shape-three"></div>
+
+    <section class="auth-wrapper">
+        <div class="auth-card">
+
+            <div class="section-top-label center-label">Secure Access</div>
+
+            <div class="auth-card-top">
+                <div class="auth-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h1>Create Account</h1>
+                <p>Register to start analyzing news articles and save your prediction history.</p>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="auth-flash-wrap">
+                        {% for message in messages %}
+                            <div class="auth-flash-box">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form action="/register" method="POST" class="auth-form">
+                <label for="username">Username</label>
+                <div class="input-icon-wrap">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+
+                <label for="email">Email</label>
+                <div class="input-icon-wrap">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <label for="password">Password</label>
+                <div class="input-icon-wrap password-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+
+                <button type="submit" class="auth-submit-btn">Register</button>
+            </form>
+
+            <div class="auth-bottom">
+                <p>Already have an account?</p>
+                <a href="/login" class="auth-alt-btn">Login Here</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="top-bar">
+        AI Fake News Detection System • Dashboard
+    </div>
+
+    <header class="main-header">
+        <div class="logo">
+            <h1>Fake <span>News</span></h1>
+        </div>
+
+        <div class="header-actions">
+            <div class="header-item">
+                <i class="fa-solid fa-chart-pie"></i>
+                <div>
+                    <small>Dashboard</small>
+                    <span>Project Statistics</span>
+                </div>
+            </div>
+
+            {% if session.get('user_id') %}
+            <div class="header-item">
+                <i class="fa-solid fa-user"></i>
+                <div>
+                    <small>Welcome</small>
+                    <span>{{ session.username }}</span>
+                </div>
+            </div>
+            <a href="/logout" class="corner-btn logout-corner-btn">Logout</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <nav class="nav-menu">
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/model-comparison">Models</a>
+        <a href="/dashboard">Dashboard</a>
+    </nav>
+
+    <section class="page-section">
+        <div class="comparison-layout">
+            <div class="section-top-label">Analytics Dashboard</div>
+            <div class="section-heading">
+                <h2>Dashboard Overview</h2>
+                <p>Summary of prediction activity and recent analysis records.</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="dashboard-icon">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <h3>Total Predictions</h3>
+                    <p>{{ total_predictions }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="dashboard-icon fake-icon">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <h3>Fake News Count</h3>
+                    <p>{{ fake_count }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="dashboard-icon real-icon">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h3>Real News Count</h3>
+                    <p>{{ real_count }}</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="dashboard-icon confidence-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3>Average Confidence</h3>
+                    <p>{{ avg_confidence }}%</p>
+                </div>
+            </div>
+
+            <div class="highlight-card dashboard-summary-card">
+                <h2>Quick Summary</h2>
+                <p class="dashboard-summary-text">
+                    The dashboard provides a quick overview of how many news items were analyzed,
+                    how many were predicted as fake or real, and the average confidence level of the system.
+                </p>
+
+                <div class="mini-summary-grid">
+                    <div class="mini-summary-box">
+                        <span class="mini-label">Total Activity</span>
+                        <strong>{{ total_predictions }}</strong>
+                    </div>
+
+                    <div class="mini-summary-box">
+                        <span class="mini-label">Fake Ratio</span>
+                        <strong>
+                            {% if total_predictions > 0 %}
+                                {{ ((fake_count / total_predictions) * 100) | round(1) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="mini-summary-box">
+                        <span class="mini-label">Real Ratio</span>
+                        <strong>
+                            {% if total_predictions > 0 %}
+                                {{ ((real_count / total_predictions) * 100) | round(1) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="mini-summary-box">
+                        <span class="mini-label">Confidence</span>
+                        <strong>{{ avg_confidence }}%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <h2>Recent Predictions</h2>
+
+                {% if recent_rows %}
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                    <th>Credibility</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in recent_rows %}
+                                <tr>
+                                    <td>{{ row[0] }}</td>
+                                    <td>{{ row[1] }}</td>
+                                    <td>
+                                        <span class="{% if row[4] == 'Real News' %}badge-real{% else %}badge-fake{% endif %}">
+                                            {{ row[4] }}
+                                        </span>
+                                    </td>
+                                    <td>{{ row[5] }}%</td>
+                                    <td>
+                                        <span class="
+                                            {% if row[6] == 'High' %}cred-high
+                                            {% elif row[6] == 'Medium' %}cred-medium
+                                            {% else %}cred-low
+                                            {% endif %}
+                                        ">
+                                            {{ row[6] }}
+                                        </span>
+                                    </td>
+                                    <td>{{ row[8] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="empty-text">No recent predictions found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

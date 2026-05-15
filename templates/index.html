@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="top-bar">
+        AI Fake News Detection System • Smart Analysis • Reliable Predictions
+    </div>
+
+    <header class="main-header">
+        <div class="logo">
+            <h1>Fake <span>News</span></h1>
+        </div>
+
+        <div class="header-actions">
+            <div class="header-item">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <small>System</small>
+                    <span>Credibility Check</span>
+                </div>
+            </div>
+
+            <div class="header-item">
+                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                <div>
+                    <small>Analyze</small>
+                    <span>News Content</span>
+                </div>
+            </div>
+
+            {% if session.get('user_id') %}
+                <div class="header-item">
+                    <i class="fa-solid fa-user"></i>
+                    <div>
+                        <small>Welcome</small>
+                        <span>{{ session.username }}</span>
+                    </div>
+                </div>
+                <a href="/logout" class="corner-btn logout-corner-btn">Logout</a>
+            {% else %}
+                <div class="corner-auth-buttons">
+                    <a href="/login" class="corner-btn login-corner-btn">Login</a>
+                    <a href="/register" class="corner-btn signup-corner-btn">Sign Up</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <nav class="nav-menu">
+        <a href="/">Home</a>
+        <a href="#features">Features</a>
+        <a href="#analyze">Analyze</a>
+
+        {% if session.get('user_id') %}
+            <a href="/history">History</a>
+            <a href="/model-comparison">Models</a>
+            <a href="/dashboard">Dashboard</a>
+        {% else %}
+            <a href="/login">History</a>
+            <a href="/login">Models</a>
+            <a href="/login">Dashboard</a>
+        {% endif %}
+    </nav>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-wrap">
+                {% for message in messages %}
+                    <div class="flash-box">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="hero-section">
+        <div class="hero-left">
+            <div class="hero-content">
+                <p class="tagline">AI-Powered Detection</p>
+                <h2>Detect Fake News With Confidence.</h2>
+                <p class="hero-text">
+                    Verify whether a news article is real or fake using machine learning, source credibility checks,
+                    suspicious keyword detection, and language-aware analysis.
+                </p>
+
+                <div class="hero-highlight-row">
+                    <div class="hero-highlight-box">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Fast AI Prediction</span>
+                    </div>
+                    <div class="hero-highlight-box">
+                        <i class="fa-solid fa-shield"></i>
+                        <span>Credibility Check</span>
+                    </div>
+                    <div class="hero-highlight-box">
+                        <i class="fa-solid fa-globe"></i>
+                        <span>Text + URL Support</span>
+                    </div>
+                </div>
+
+                <div class="hero-buttons">
+                    {% if session.get('user_id') %}
+                        <a href="#analyze" class="btn primary-btn">Analyze News →</a>
+                    {% else %}
+                        <a href="/login" class="btn primary-btn">Login to Analyze →</a>
+                    {% endif %}
+
+                    <a href="{% if session.get('user_id') %}/model-comparison{% else %}/login{% endif %}" class="btn secondary-btn">
+                        View Models →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="hero-image-overlay">
+                <img src="{{ url_for('static', filename='news-hero.jpg') }}" alt="News Analysis">
+                <div class="hero-floating-card card-one">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div>
+                        <strong>Real-Time Output</strong>
+                        <span>Instant prediction results</span>
+                    </div>
+                </div>
+                <div class="hero-floating-card card-two">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <div>
+                        <strong>Confidence Score</strong>
+                        <span>Clear result comparison</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-strip">
+        <div class="stats-container">
+            <div class="stat-mini-card">
+                <h3>Text Analysis</h3>
+                <p>Paste article content directly for instant prediction.</p>
+            </div>
+            <div class="stat-mini-card">
+                <h3>URL Extraction</h3>
+                <p>Fetch article text from news links automatically.</p>
+            </div>
+            <div class="stat-mini-card">
+                <h3>Source Review</h3>
+                <p>Check domain trust level and credibility signals.</p>
+            </div>
+            <div class="stat-mini-card">
+                <h3>History Tracking</h3>
+                <p>Store and review your previous analysis results.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="analyze-section" id="analyze">
+        <div class="analyze-wrapper">
+
+            <div class="analyze-left">
+                <div class="section-top-label">AI Powered Platform</div>
+                <h3>Analyze News Article</h3>
+                <p>
+                    Paste the article text or provide a news URL below to detect whether the content is real or fake.
+                </p>
+
+                {% if session.get('user_id') %}
+                    <form action="/predict" method="POST" class="news-form">
+                        <label for="news_text">Paste News Article Text</label>
+                        <textarea name="news_text" id="news_text" placeholder="Paste the full news article text here..."></textarea>
+
+                        <div class="or-divider">
+                            <span>OR</span>
+                        </div>
+
+                        <label for="news_url">Enter News URL</label>
+                        <input type="url" name="news_url" id="news_url" placeholder="https://example.com/news-article">
+
+                        <div class="analyze-note">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Enter either article text or a URL for best results.</span>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Analyze Now</button>
+                    </form>
+                {% else %}
+                    <div class="locked-box">
+                        <label for="news_text_locked">Paste News Article Text</label>
+                        <textarea id="news_text_locked" placeholder="Login required to analyze news..." disabled></textarea>
+
+                        <div class="or-divider">
+                            <span>OR</span>
+                        </div>
+
+                        <label for="news_url_locked">Enter News URL</label>
+                        <input type="url" id="news_url_locked" placeholder="Login required to analyze URL..." disabled>
+
+                        <div class="analyze-note locked-note">
+                            <i class="fa-solid fa-lock"></i>
+                            <span>Please login to use prediction and save history.</span>
+                        </div>
+
+                        <a href="/login" class="submit-btn login-to-analyze-btn">Login to Analyze</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="analyze-right" id="features">
+                <div class="section-top-label">AI Powered Platform</div>
+                <h3>What This System Provides</h3>
+
+                <div class="feature-list">
+                    <div class="feature-card">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div>
+                            <h4>Fake/Real Prediction</h4>
+                            <p>Detect whether the news is genuine or misleading using a trained machine learning model.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <div>
+                            <h4>Confidence Score</h4>
+                            <p>View prediction percentages for fake and real labels with a clear confidence output.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <i class="fa-solid fa-link"></i>
+                        <div>
+                            <h4>URL Extraction</h4>
+                            <p>Extract content from article links and analyze it directly without manual copy-paste.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <i class="fa-solid fa-globe"></i>
+                        <div>
+                            <h4>Source Credibility</h4>
+                            <p>Review domain trust level to strengthen the overall credibility analysis.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div>
+                            <h4>Keyword Detection</h4>
+                            <p>Identify suspicious words and sensational phrases commonly seen in misleading content.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <i class="fa-solid fa-language"></i>
+                        <div>
+                            <h4>Language Detection</h4>
+                            <p>Automatically detect the language of the entered article for improved analysis flow.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <div>
+                            <h4>Prediction History</h4>
+                            <p>Review previous predictions after login and track how the system analyzed past inputs.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <div>
+                            <h4>Secure Access</h4>
+                            <p>Only logged-in users can analyze content and access personal prediction history.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="workflow-section">
+        <div class="workflow-container">
+            <div class="section-top-label center-label">Working Process</div>
+            <h3>How The System Works</h3>
+
+            <div class="workflow-steps">
+                <div class="workflow-card">
+                    <div class="workflow-number">01</div>
+                    <h4>Input News</h4>
+                    <p>Enter article text or paste a valid news URL.</p>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="workflow-number">02</div>
+                    <h4>Process Content</h4>
+                    <p>The system extracts and cleans content for analysis.</p>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="workflow-number">03</div>
+                    <h4>Apply AI Model</h4>
+                    <p>The trained model predicts whether the news is fake or real.</p>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="workflow-number">04</div>
+                    <h4>Show Results</h4>
+                    <p>Users receive scores, credibility level, and keyword insights.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="quote-section">
+        <h3>Why This Project Matters</h3>
+        <p>
+            “Fake news spreads quickly and influences public opinion. This system helps users verify information
+            through AI-based credibility and content analysis.”
+        </p>
+    </section>
+
+</body>
+</html>
