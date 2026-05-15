@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="top-bar">
+        AI Fake News Detection System • Prediction History
+    </div>
+
+    <header class="main-header">
+        <div class="logo">
+            <h1>Fake <span>News</span></h1>
+        </div>
+
+        <div class="header-actions">
+            <div class="header-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <div>
+                    <small>History</small>
+                    <span>Saved Predictions</span>
+                </div>
+            </div>
+
+            {% if session.get('user_id') %}
+            <div class="header-item">
+                <i class="fa-solid fa-user"></i>
+                <div>
+                    <small>Welcome</small>
+                    <span>{{ session.username }}</span>
+                </div>
+            </div>
+            <a href="/logout" class="corner-btn logout-corner-btn">Logout</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <nav class="nav-menu">
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/model-comparison">Models</a>
+        <a href="/dashboard">Dashboard</a>
+    </nav>
+
+    <section class="page-section">
+        <div class="comparison-layout">
+
+            <div class="section-top-label">Prediction Records</div>
+            <div class="section-heading">
+                <h2>Prediction History</h2>
+                <p>Review all your previously analyzed news content and system predictions.</p>
+            </div>
+
+            {% if rows %}
+                <div class="table-card">
+
+                    <div class="table-header">
+                        <h3>Saved Results</h3>
+                        <span class="table-count">{{ rows|length }} Records</span>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Input</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                    <th>Credibility</th>
+                                    <th>Keywords</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for row in rows %}
+                                <tr>
+                                    <td>{{ row[0] }}</td>
+
+                                    <td>
+                                        <span class="type-badge">
+                                            {{ row[1] }}
+                                        </span>
+                                    </td>
+
+                                    <td class="input-cell">
+                                        {{ row[2][:80] }}{% if row[2]|length > 80 %}...{% endif %}
+                                    </td>
+
+                                    <td>
+                                        <span class="{% if row[4] == 'Real News' %}badge-real{% else %}badge-fake{% endif %}">
+                                            {{ row[4] }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <strong>{{ row[5] }}%</strong>
+                                    </td>
+
+                                    <td>
+                                        <span class="
+                                            {% if row[6] == 'High' %}cred-high
+                                            {% elif row[6] == 'Medium' %}cred-medium
+                                            {% else %}cred-low
+                                            {% endif %}
+                                        ">
+                                            {{ row[6] }}
+                                        </span>
+                                    </td>
+
+                                    <td class="keyword-cell">
+                                        {% if row[7] %}
+                                            {{ row[7][:50] }}{% if row[7]|length > 50 %}...{% endif %}
+                                        {% else %}
+                                            <span class="no-keywords">None</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>{{ row[8] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="empty-history-box">
+                    <i class="fa-solid fa-clock"></i>
+                    <h3>No History Yet</h3>
+                    <p>You haven’t analyzed any news yet. Start by analyzing an article.</p>
+                    <a href="/" class="btn primary-btn">Analyze Now →</a>
+                </div>
+            {% endif %}
+
+        </div>
+    </section>
+
+</body>
+</html>
