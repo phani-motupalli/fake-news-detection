@@ -1,0 +1,7 @@
+flask
+werkzeug
+langdetect
+requests
+beautifulsoup4
+deep-translator
+joblib
