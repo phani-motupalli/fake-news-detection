@@ -128,6 +128,72 @@ Logistic Regression / Naive Bayes
 
 
 
+
+
+📸 Screenshots
+
+
+
+Home Page
+
+\[Home Page](screenshots/home-page.png)
+
+
+
+Homepage 2
+
+\[Homepage 2](screenshots/homepage2.png)
+
+
+
+Login Page
+
+\[Login Page](screenshots/login-page.png)
+
+
+
+News Input Page
+
+\[News Input](screenshots/news-enter-page.png)
+
+
+
+Prediction Page
+
+\[Prediction](screenshots/prediction.png)
+
+
+
+Prediction Details
+
+\[Prediction Details](screenshots/prediction-details.png)
+
+
+
+History Page
+
+\[History Page](screenshots/history-page.png)
+
+
+
+Dashboard Page
+
+\[Dashboard Page](screenshots/dashboard-page.png)
+
+
+
+Comparison Page
+
+\[Comparison Page](screenshots/comparison-page.png)
+
+
+
+Bottom Section
+
+\[Bottom](screenshots/bottom-of-page.png)
+
+
+
 👨‍💻 Author
 
 
