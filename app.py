@@ -658,7 +658,6 @@ def dashboard():
         recent_rows=rows[:5]
     )
 
-
 if __name__ == "__main__":
     init_db()
     load_ml_files()
